@@ -150,7 +150,7 @@ print(df)
 
 import pandas as pd
 import numpy as np
-tech={'courses':"Spark PySpark Hadoop  Python Pandas Oracle Java".split(" "),'Fee':[20000,25000,36000,np.nan,22000,24000,21000,22000],'Duration':"30days,40days,35days,,40days,60days,50days,55days".split(','),'Discount':[11.8,23.7,21.4,None,15.7,13.5,12.5,25.4,]}
+tech={'Courses':"Spark PySpark Hadoop Python Pandas Oracle Java C++".split(" "),'Fee':[20000,25000,36000,np.nan,22000,24000,21000,22000],'Duration':"30days,40days,35days,,40days,60days,50days,55days".split(','),'Discount':[11.8,23.7,21.4,None,15.7,13.5,12.5,25.4,]}
 row_labels="r0 r1 r2 r3 r4 r5 r6 r7".split(" ")
 
 df=pd.DataFrame(tech,index=row_labels,columns=['Courses','Fee','Duration','Discount'])
@@ -222,3 +222,192 @@ df1=df.drop([1,4],axis=0)
 df1
 df1=df.drop(range(0,4))
 df1
+
+###########################################################################
+#access data by index
+#df2=iloc[startrow:endrow,startcolumn:endcolumn]
+df2=df.iloc[[2,3,6]]
+df2=df.iloc[1:5]
+df2=df.iloc[:1]
+df2=df.iloc[:3]
+df2=df.iloc[-1:]
+df2=df.iloc[-3:]
+df2=df.iloc[::2]
+df2
+
+#select rows by index labels
+df2=df.loc[['r0','r2','r3']]
+df2
+df2=df.loc['r1':'r5']
+df2
+df.dtypes
+
+#select multiple columns 
+df2=df.loc[:,['Courses','Fee','Duration']]
+df2
+#select columns between two columns
+df2=df.loc[:,'Courses':'Duration']
+df2
+#Select columns by index
+df2=df.loc[:,:'Fee']
+df2
+df2=df.loc[:,'Duration':]
+#select every alternate column
+df2=df.loc[:,::2]
+df2
+
+#######################################################################
+#pandas.DataFrame.query()
+df2=df.query("Courses=='Java'") #Query all rows with courses equals Java
+df2
+df2=df.query("Fee==20000")  #query all rows with Fee equals 20000
+df2
+df2=df.query("Courses!='Java'") #Query all rows with courses equals Java
+
+############################################################################
+#Add new column/s to dataframe
+tutors="Ram,Shyam,Ghanshyam,Sita,Ganesh,Ramesh,Suresh,Nilesh".split(',')
+df.assign(tutorsAssigned=tutors)
+
+#Add multiple columns
+MNCCompanies=['TATA','Mahindra','TCS','Infosys','Google','Amazon','Meta','Netflix']
+Sal='10 lpa,20 lpa,25 lpa,30 lpa,35 lpa,20 lpa,10 lpa,15 lpa'.split(',')
+df2=df.assign(Companies=MNCCompanies,AvgSalary=Sal)
+df2
+############################################################################
+#Derive new column from existing column
+df.assign(Discount_Percent=lambda x: x.Fee * x.Discount/100)
+df
+#########################################################################
+#Append column to existing dataframe
+df['MNCCompanies']=MNCCompanies
+df
+#Add new column to specific location
+df.insert(0,'Tutors',tutors)
+
+############################################################################
+#rename column names
+df.rename(columns={'Courses':'Course list','Fee':'Course Fee'},inplace=True)
+print(df.columns)
+############################################################################
+
+#Quick exampples of getting the number of rows and columns in dataframe
+rowsCount=len(df.index)
+rowsCount
+rowsCount=len(df.axes[0])
+rowsCount
+columnCount=len(df.axes[1])
+columnCount
+rowCount=df.shape[0]
+rowCount
+columnCount=df.shape[1]
+columnCount
+
+############################################################################
+#Pandas Apply function
+
+import pandas as pd 
+import numpy as np
+data={'A':[1,2,3],'B':[4,5,6],'C':[7,8,9]}
+df=pd.DataFrame(data)
+def add_3(x):
+    return 3+x
+df2=df.apply(add_3)
+df2
+
+df2=df['A'].apply(add_3)  #apply to only 1 column
+df2
+
+df[['A','B']]=df[['A','B']].apply(add_3)  #apply to multiple columns
+
+#Apply using Lambda function
+df2=df.apply(lambda x: x+10)
+df2
+
+############################################################################
+#Transform function
+df2=df.transform(add_3)
+df2
+###########################################################################
+data={'A':[1,2,3],'B':[4,5,6],'C':[7,8,9]}
+df=pd.DataFrame(data)
+df['A']=df['A'].map(lambda A:A/2)
+df
+
+df['A']=df['A'].apply(np.square)
+df
+
+#using numpy.square method and [] operator
+df['B']=np.square(df['B'])
+df
+
+#####################################################################################################
+#Pandas groupby()
+tech={'Courses':"Spark PySpark Hadoop Python Hadoop Oracle Python C++".split(" "),'Fee':[20000,25000,36000,np.nan,22000,24000,21000,22000],'Duration':"30days,40days,35days,,40days,60days,50days,55days".split(','),'Discount':[11.8,23.7,21.4,None,15.7,13.5,12.5,25.4,]}
+row_labels="r0 r1 r2 r3 r4 r5 r6 r7".split(" ")
+df=pd.DataFrame(tech,index=row_labels)
+df2=df.groupby(['Courses']).sum()
+print(df2)
+###############################################################################
+#Shuffling of dataframe rows
+df1=df.sample(frac=0.5)
+df1
+df1=df
+df1
+df1.sample(frac=0.5)
+########################################################################
+#create a new index starting from zero
+df1=df.sample(frac=1).reset_index()
+df1
+################################################################################
+#drop shuffle index
+df1=df.sample(frac=0.5).reset_index(drop=True)
+df1
+############################################################################
+#Pandas Join
+tech1={"Course":["Spark ","Pyspark","Python ","PAndas"],
+       "Fee":[20000,25000,22000,30000],
+       "Duration":["30days","40days","35days","50days"]}
+row_name1=['r1','r2','r3','r4']
+df1=pd.DataFrame(tech1,index=row_name1)
+
+tech2={"Course":["Spark ","Java","Python ","Go"],
+       "Fee":[2000,2300,1200,2000]}
+row_name2=['r1','r6','r3','r5']
+df2=pd.DataFrame(tech2,index=row_name2)
+df3=df1.join(df2,lsuffix="_left",rsuffix="_right")
+df3
+
+#Pandas inner join
+df3=df1.join(df2,lsuffix="_left",rsuffix="_right",how='inner')
+
+#Pandas left join
+df4=df1.join(df2,lsuffix="_left",rsuffix="_right",how='left')  
+#if not explicitly mentioned 'how' left join is executed by default
+
+#Pandas right join
+df5=df1.join(df2,lsuffix="_left",rsuffix="_right",how='right')
+
+#############################################################################
+#Merging of dataframes
+#using pandas.merge()
+df3=pd.merge(df1,df2)
+
+#using pandas.concat()
+df1=pd.DataFrame({"Course":["Spark ","Pyspark","Python ","PAndas"],
+       "Fee":[20000,25000,22000,30000]})
+df2=pd.DataFrame({"Course":["Spark ","Hadoop","Hyperion","Java"],
+       "Fee":[20000,25000,22000,30000]})
+data=[df1,df2]
+df3=pd.concat(data).reset_index()
+df4=pd.concat(data,axis=1).reset_index()
+
+#Concatenate multiple dataframes using pandas.concat()
+df=pd.DataFrame({"Course":["Spark ","Pyspark","Python ","PAndas"],
+       "Fee":[20000,25000,22000,30000]})
+df1=pd.DataFrame({"Course":["Spark ","Pyspark","Python ","PAndas"],
+       "Fee":[20000,25000,22000,30000]})
+df2=pd.DataFrame({'Duration':['20days','30days','40days','50days'],
+                  "Discount":[2000,2300,1200,2000]})
+data=[df,df1,df2]
+df5=pd.concat(data)
