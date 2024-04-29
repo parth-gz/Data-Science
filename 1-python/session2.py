@@ -8,7 +8,7 @@ Created on Mon Mar 25 08:26:10 2024
 
 lst=[num for num in range (0,20)]
 print(lst)
-
+enumerate
 #####################
 
 names=['dada','mama','kaka']

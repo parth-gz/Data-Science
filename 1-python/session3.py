@@ -9,7 +9,6 @@ Created on Tue Mar 26 09:35:35 2024
 
 import pandas as pd
 f1=pd.read_csv('buzzers.csv')
-
 #import os 
 with open('buzzers.csv') as raw_data:
     print(raw_data.read())
